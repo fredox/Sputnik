@@ -79,21 +79,23 @@ class Sputnik {
 		else
 			parse_str( file_get_contents( "php://input" ), $request['params'] );
 
-		$this->request = $request;
+        $this->request = $request;
+        $uriParts = explode('?', $_SERVER['REQUEST_URI']);
+        $this->request['uri']      = array_shift($uriParts); 
         $this->request['slugs']    = $this->slugs();
         $this->request['headers']  = $this->getRequestHeaders();
         $this->request['function'] = '';
-        $this->request['uri']      = ''; 
+
 
 	}
 
 	function slugs( $index = false )
     { 
-		$slugs = explode( '/', trim( $_SERVER['REQUEST_URI'], '/' ) ); 
+		$slugs = explode( '/', trim( $this->request['uri'], '/' ) ); 
 		
 		if ( !empty($index) && !is_numeric($index) ) {
 			
-			$slugs = explode( '/', trim( $_SERVER['REQUEST_URI'], '/' ) );
+			$slugs = explode( '/', trim( $this->request['uri'], '/' ) );
 			$key   = array_search( $index, $slugs );
 			
 			if ( ($key !== FALSE) && isset($slugs[$key+1]) )
@@ -143,9 +145,8 @@ class Sputnik {
 
 			    foreach ( $this->uris as $pattern => $function ) {
 
-				    if (preg_match('/^'.addcslashes($pattern,'/').'$/', $_SERVER['REQUEST_URI'])) 
+				    if (preg_match('/^'.addcslashes($pattern,'/').'$/', $this->request['uri'])) 
 				    {
-						$this->request['uri'] 		= $pattern;
 						$this->request['function']	= $function;
 					
 					    $classMethod   = $this->request['method'] . '_' . $function;
