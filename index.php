@@ -1,7 +1,7 @@
 <?php
 
     include_once( 'sputnik.php' );
-	include_once( 'appedantic.php' );
+	include_once( 'Example.php' );
 	
 	$requiredPlugins = array(
 		 'html'
@@ -9,13 +9,7 @@
 		,'simpleauth'
 	);
 
-	class Example extends Sputnik {
-		public function GET_index()
-		{
-			$this->response['data'] = 'This is an Example';
-		}
-	}
-	
+		
 	$app = new Example( $requiredPlugins );
 	
 	// API uris
